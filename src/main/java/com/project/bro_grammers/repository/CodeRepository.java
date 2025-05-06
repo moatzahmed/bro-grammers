@@ -1,0 +1,10 @@
+package com.project.bro_grammers.repository;
+
+import com.project.bro_grammers.model.Code;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface CodeRepository extends JpaRepository<Code,Integer> {
+    List<Code> findByUploaderId(Integer uploaderId);
+}
