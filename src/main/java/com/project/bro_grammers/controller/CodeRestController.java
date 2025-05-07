@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class CodeRestController {
-    private CodeService codeService;
+    private final CodeService codeService;
 
 
     @Autowired
