@@ -9,4 +9,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
+
+    @Column(name = "commenter_id")
+    private Integer commenterId;
+
+    @Column(name = "code_id")
+    private Integer codeId;
+
 }
