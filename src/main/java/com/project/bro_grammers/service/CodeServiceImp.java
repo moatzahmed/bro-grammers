@@ -20,9 +20,9 @@ import java.util.Map;
 
 @Service
 public class CodeServiceImp implements CodeService {
-    private CodeRepository codeRepository;
-    private UserService userService;
-    private ObjectMapper objectMapper;
+    private final CodeRepository codeRepository;
+    private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public CodeServiceImp(CodeRepository codeRepository, UserService userService, ObjectMapper objectMapper) {
