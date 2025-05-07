@@ -6,10 +6,7 @@ import com.project.bro_grammers.dto.RegisterRequest;
 import com.project.bro_grammers.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,6 +20,11 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authenticationService.login(loginRequest));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader)
+    {
+        return authenticationService.logout(authHeader);
     }
 
 }

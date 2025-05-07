@@ -1,5 +1,6 @@
 package com.project.bro_grammers.security;
 
+import com.project.bro_grammers.service.TokenBlackListService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final TokenBlackListService tokenBlackListService;
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
@@ -26,6 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = null;
         if (header != null && header.startsWith("Bearer ")) {
             jwt = header.substring(7);
+            if (tokenBlackListService.isTokenBlacklisted(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has been revoked.");
+                return;
+            }
             username = jwtUtil.extractUsername(jwt);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

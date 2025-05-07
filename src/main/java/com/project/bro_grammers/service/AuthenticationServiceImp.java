@@ -6,11 +6,15 @@ import com.project.bro_grammers.dto.RegisterRequest;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.repository.UserRepository;
 import com.project.bro_grammers.security.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ public class AuthenticationServiceImp implements AuthenticationService{
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final TokenBlackListService tokenBlacklistService;
     @Override
     public LoginResponse register(RegisterRequest registerRequest) {
         User user = User.builder()
@@ -45,5 +50,14 @@ public class AuthenticationServiceImp implements AuthenticationService{
         return LoginResponse.builder()
                 .accessToken(token)
                 .build();
+    }
+    @Override
+    public ResponseEntity<?> logout(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            Date expiration = jwtUtil.extractClaim(token, Claims::getExpiration);
+            tokenBlacklistService.blacklistToken(token, expiration);
+        }
+        return ResponseEntity.ok("Logged out successfully.");
     }
 }
