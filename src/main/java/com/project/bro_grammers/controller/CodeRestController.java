@@ -2,6 +2,7 @@ package com.project.bro_grammers.controller;
 
 import com.project.bro_grammers.dto.CodeSubmissionRequest;
 import com.project.bro_grammers.model.Code;
+import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -51,5 +53,10 @@ public class CodeRestController {
         return ResponseEntity.noContent().build();
     }
 
+    //add this
+    @PatchMapping("/codes/{id}")
+    public Code patchCode(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        return codeService.patchCode(id, updates);
+    }
 
 }
