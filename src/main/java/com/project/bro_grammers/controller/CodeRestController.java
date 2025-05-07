@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class CodeRestController {
-    private CodeService codeService;
+    private final CodeService codeService;
 
 
     @Autowired

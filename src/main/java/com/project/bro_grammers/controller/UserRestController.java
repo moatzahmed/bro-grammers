@@ -1,7 +1,6 @@
 package com.project.bro_grammers.controller;
 
 
-import com.project.bro_grammers.exception.NotAllowedIdException;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class UserRestController {
-    private UserService userService;
+    private final UserService userService;
 
 
     @Autowired

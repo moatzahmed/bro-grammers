@@ -1,28 +1,32 @@
 package com.project.bro_grammers.service;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.project.bro_grammers.exception.BadRequestException;
 import com.project.bro_grammers.exception.NotAllowedIdException;
 import com.project.bro_grammers.exception.ResourceNotFoundException;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserServiceImp implements UserService {
-    private UserRepository userRepository;
-    private ObjectMapper objectMapper;
+public class UserServiceImp implements UserService, UserDetailsService {
+    private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, ObjectMapper objectMapper) {
+    public UserServiceImp(UserRepository userRepository, ObjectMapper objectMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.objectMapper = objectMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,6 +34,7 @@ public class UserServiceImp implements UserService {
         if (user.getId() != null) {
             throw new NotAllowedIdException("Can't Add Id for The User manually !");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -68,4 +73,8 @@ public class UserServiceImp implements UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 }
