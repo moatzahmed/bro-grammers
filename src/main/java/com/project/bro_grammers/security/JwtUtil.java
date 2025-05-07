@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -26,6 +27,17 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
+    }
+     public String generateToken(String username, Map<String, Object> extraClaims) {
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+
+        return Jwts.builder()
+                .claims(extraClaims)
+                .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
@@ -72,5 +84,8 @@ public class JwtUtil {
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtException("Invalid JWT token: " + e.getMessage());
         }
+    }
+    public Long extractId(String token) {
+        return extractClaim(token, claims -> claims.get("ID", Long.class));
     }
 }

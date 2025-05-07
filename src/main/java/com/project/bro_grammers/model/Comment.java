@@ -1,19 +1,25 @@
 package com.project.bro_grammers.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Entity
 @Table(name = "comments")
+@Data
+@Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "commenter_id")
-    private Integer commenterId;
+    private Long commenterId;
 
     @Column(name = "code_id")
-    private Integer codeId;
+    private Long codeId;
+    @Column(name = "content")
+    private String content;
 
 }
