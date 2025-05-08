@@ -21,7 +21,7 @@ public interface CodeService {
 
     Code find(Long id);
 
-    void deleteCode(Long id);
+    void deleteCode(Long codeId, String authHeader);
 
     Code patchCode(Long id, @RequestBody Map<String, Object> updates);
 
