@@ -1,12 +1,19 @@
 package com.project.bro_grammers.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "code_file")
+@Builder
+@Data
+@AllArgsConstructor
 public class Code {
 
     @Id
