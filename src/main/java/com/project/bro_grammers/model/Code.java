@@ -19,13 +19,13 @@ public class Code {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "file_name")
     private String filename;
 
     @Column(name = "uploader_id")
-    private Integer uploaderId;
+    private Long uploaderId;
 
     @Column(name = "timestamp")
     private long timestamp;
@@ -45,7 +45,7 @@ public class Code {
         this.status = Status.PENDING;
     }
 
-    public Code(String filename, Integer uploaderId, byte[] content) {
+    public Code(String filename, Long uploaderId, byte[] content) {
         this.filename = filename;
         this.uploaderId = uploaderId;
         this.timestamp = Instant.now().toEpochMilli();
@@ -55,11 +55,11 @@ public class Code {
 
     // ==================== Getters and Setters ====================
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -71,11 +71,11 @@ public class Code {
         this.filename = filename;
     }
 
-    public Integer getUploaderId() {
+    public Long getUploaderId() {
         return uploaderId;
     }
 
-    public void setUploaderId(Integer uploaderId) {
+    public void setUploaderId(Long uploaderId) {
         this.uploaderId = uploaderId;
     }
 

@@ -9,6 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CodeSubmissionRequest {
-    private Integer uploaderId;
+    private Long uploaderId;
     private MultipartFile file;
 }

@@ -2,6 +2,7 @@ package com.project.bro_grammers.controller;
 
 import com.project.bro_grammers.dto.CodeSubmissionRequest;
 import com.project.bro_grammers.model.Code;
+import com.project.bro_grammers.model.Comment;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class CodeRestController {
 
 
     @PostMapping("/codes")
-    public Code uploadCode(@RequestParam("file") MultipartFile file, @RequestParam("uploaderId") Integer uploaderId) {
+    public Code uploadCode(@RequestParam("file") MultipartFile file, @RequestParam("uploaderId") Long uploaderId) {
         return codeService.uploadCode(new CodeSubmissionRequest(uploaderId, file));
     }
 
@@ -36,27 +37,31 @@ public class CodeRestController {
         return ResponseEntity.ok(codes);
     }
 
-    @GetMapping("/codes/{id}")
-    public ResponseEntity<Code> downloadFile(@PathVariable Integer id) {
-        Code code = codeService.find(id);
+    @GetMapping("/codes/{codeId}")
+    public ResponseEntity<Code> downloadFile(@PathVariable Long codeId) {
+        Code code = codeService.find(codeId);
         return ResponseEntity.ok(code);
     }
 
     @GetMapping("/codes/authors/{uploaderId}")
-    public List<Code> codeByAuthor(@PathVariable Integer uploaderId) {
+    public List<Code> codeByAuthor(@PathVariable Long uploaderId) {
         return codeService.findCodesByAuthor(uploaderId);
     }
 
     @DeleteMapping("/codes/{codeId}")
-    public ResponseEntity<Void> deleteCode(@PathVariable Integer codeId) {
+    public ResponseEntity<Void> deleteCode(@PathVariable Long codeId) {
         codeService.deleteCode(codeId);
         return ResponseEntity.noContent().build();
     }
 
     //add this
     @PatchMapping("/codes/{id}")
-    public Code patchCode(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+    public Code patchCode(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return codeService.patchCode(id, updates);
     }
 
+    @GetMapping("codes/myCodes")
+    public List<Code> myCodes(@RequestHeader("Authorization") String authHeader) {
+        return codeService.myAllCodes(authHeader);
+    }
 }
