@@ -32,7 +32,7 @@ public class UserRestController {
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable int id) {
+    public User getUser(@PathVariable Long id) {
         return userService.find(id);
     }
 
@@ -42,13 +42,13 @@ public class UserRestController {
     }
 
     @PatchMapping("/users/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody Map<String, Object> updates) {
+    public User updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return userService.patch(id, updates);
     }
 
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }

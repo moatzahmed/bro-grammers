@@ -8,6 +8,7 @@ import com.project.bro_grammers.exception.ResourceNotFoundException;
 import com.project.bro_grammers.model.Code;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.repository.CodeRepository;
+import com.project.bro_grammers.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,14 @@ public class CodeServiceImp implements CodeService {
     private final CodeRepository codeRepository;
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public CodeServiceImp(CodeRepository codeRepository, UserService userService, ObjectMapper objectMapper) {
+    public CodeServiceImp(CodeRepository codeRepository, UserService userService, ObjectMapper objectMapper, JwtUtil jwtUtil) {
         this.codeRepository = codeRepository;
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -55,31 +58,41 @@ public class CodeServiceImp implements CodeService {
     }
 
     @Override
-    public List<Code> findCodesByAuthor(Integer uploaderId) {
+    public List<Code> findCodesByAuthor(Long uploaderId) {
         return codeRepository.findByUploaderId(uploaderId);
     }
 
 
     @Override
-    public Code find(Integer id) {
+    public Code find(Long id) {
         return codeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This code with ID " + id + " isn't found :("));
     }
 
     @Override
-    public void deleteCode(Integer id) {
+    public void deleteCode(Long id) {
         Code code = find(id);
         codeRepository.delete(code);
     }
 
     @Override
-    public Code patchCode(Integer id, Map<String, Object> updates) {
+    public List<Code> myAllCodes(String authHeader) {
+        Long curUserId = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            curUserId = jwtUtil.extractId(token);
+        }
+        return codeRepository.findByUploaderId(curUserId);
+    }
+
+    @Override
+    public Code patchCode(Long id, Map<String, Object> updates) {
         Code code = find(id);
         if (updates.containsKey("id")) throw new NotAllowedIdException("Can't Add Id for The User manually !");
         ObjectNode codeNode = objectMapper.convertValue(code, ObjectNode.class);
         ObjectNode patchNode = objectMapper.convertValue(updates, ObjectNode.class);
         codeNode.setAll(patchNode);
-        return objectMapper.convertValue(codeNode, Code.class);
+        return codeRepository.save(objectMapper.convertValue(codeNode, Code.class));
     }
 
 

@@ -10,13 +10,13 @@ public interface UserService {
 
     List<User> findAll();
 
-    User find(Integer id);
+    User find(Long id);
 
     User update(User user);
 
-    User patch(int id, Map<String, Object> updates);
+    User patch(Long id, Map<String, Object> updates);
 
-    void delete(int id);
+    void delete(Long id);
 
 
 }

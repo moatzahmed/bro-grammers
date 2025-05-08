@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface CodeRepository extends JpaRepository<Code,Integer> {
-    List<Code> findByUploaderId(Integer uploaderId);
+public interface CodeRepository extends JpaRepository<Code,Long> {
+    List<Code> findByUploaderId(Long uploaderId);
 }

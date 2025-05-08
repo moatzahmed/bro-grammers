@@ -44,7 +44,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public User find(Integer id) {
+    public User find(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This user with ID " + id + " isn't found :("));
     }
@@ -56,18 +56,18 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public User patch(int id, Map<String, Object> updates) {
+    public User patch(Long id, Map<String, Object> updates) {
         User user = find(id);
         if (updates.containsKey("id")) throw new NotAllowedIdException("Can't Add Id for The User manually !");
         ObjectNode userNode = objectMapper.convertValue(user, ObjectNode.class);
         ObjectNode patchNode = objectMapper.convertValue(updates, ObjectNode.class);
         userNode.setAll(patchNode);
-        return objectMapper.convertValue(userNode, User.class);
+        return userRepository.save(objectMapper.convertValue(userNode, User.class));
 
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         find(id);
         userRepository.deleteById(id);
     }
