@@ -3,9 +3,11 @@ package com.project.bro_grammers.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.project.bro_grammers.dto.CodeSubmissionRequest;
+import com.project.bro_grammers.exception.BadRequestException;
 import com.project.bro_grammers.exception.NotAllowedIdException;
 import com.project.bro_grammers.exception.ResourceNotFoundException;
 import com.project.bro_grammers.model.Code;
+import com.project.bro_grammers.model.Role;
 import com.project.bro_grammers.model.User;
 import com.project.bro_grammers.repository.CodeRepository;
 import com.project.bro_grammers.security.JwtUtil;
@@ -13,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +74,16 @@ public class CodeServiceImp implements CodeService {
     }
 
     @Override
-    public void deleteCode(Long id) {
-        Code code = find(id);
+    public void deleteCode(Long codeId, String authHeader) {
+        Long curUserId = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            curUserId = jwtUtil.extractId(token);
+        }
+        User user = userService.find(curUserId);
+        Code code = find(codeId);
+        if (user.getRole() != Role.TEAM_LEAD && code.getUploaderId() != user.getId())
+            throw new BadRequestException("Not Authorized !!");
         codeRepository.delete(code);
     }
 

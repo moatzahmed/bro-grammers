@@ -49,8 +49,8 @@ public class CodeRestController {
     }
 
     @DeleteMapping("/codes/{codeId}")
-    public ResponseEntity<Void> deleteCode(@PathVariable Long codeId) {
-        codeService.deleteCode(codeId);
+    public ResponseEntity<Void> deleteCode(@PathVariable Long codeId, @RequestHeader("Authorization") String authHeader) {
+        codeService.deleteCode(codeId,authHeader);
         return ResponseEntity.noContent().build();
     }
 
